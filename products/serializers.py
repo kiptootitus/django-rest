@@ -10,8 +10,10 @@ class ProductSerializer(serializers.ModelSerializer):
       'name',
       'description',
       'price',
+      'product_type',
       'sale_price',
       'my_discount',
+      
     ]
     
   def get_my_discount(self, obj):
