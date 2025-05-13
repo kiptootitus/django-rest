@@ -55,3 +55,35 @@ def product_alt_view(request, pk=None):
             instance = serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
+
+
+
+class ProductUpdateAPIView(generics.RetrieveUpdateAPIView):
+    """
+    This view allows you to retrieve a product by its ID (GET) and update it (PUT/PATCH).
+    """
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def get_object(self):
+        """
+        Optionally override get_object to use a custom lookup,
+        or simply rely on the default which uses the 'pk' lookup field.
+        """
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(Product, pk=pk)
+
+    def update(self, request, *args, **kwargs):
+        """
+        Optionally override update to customize update behavior.
+        This method demonstrates explicitly saving the instance
+        and returning the updated data.
+        """
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
