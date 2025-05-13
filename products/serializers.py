@@ -10,7 +10,6 @@ class ProductSerializer(serializers.ModelSerializer):
       'name',
       'description',
       'price',
-      'product_type',
       'sale_price',
       'my_discount',
       
