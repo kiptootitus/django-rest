@@ -10,6 +10,8 @@ class Author(models.Model):
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
+    def __str__(self):
+        return self.full_name
 
 
 class Book(models.Model):
@@ -39,14 +41,11 @@ class BookAuthor(models.Model):
         ]
 
     def clean(self):
-        # Check if author has already authored 2 books
         if BookAuthor.objects.filter(author=self.author).exclude(pk=self.pk).count() >= 2:
             raise ValidationError("An author can't be linked to more than 2 books.")
-        
-        # Check if book already has 2 authors
         if BookAuthor.objects.filter(book=self.book).exclude(pk=self.pk).count() >= 2:
             raise ValidationError("A book can't have more than 2 authors.")
 
     def save(self, *args, **kwargs):
-        self.clean()  # Run the validation
+        self.clean()
         super().save(*args, **kwargs)

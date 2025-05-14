@@ -10,7 +10,7 @@ class BookSerializer(serializers.ModelSerializer):
       'title',
       'price',
       'description',
-      'Available'      
+      'available'      
     ]
     
 
