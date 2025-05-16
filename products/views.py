@@ -1,39 +1,38 @@
-from django.http import Http404
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from .models import Product
 from .serializers import ProductSerializer
-
+from permissions import isStaffEditorPermission  # Ensure this exists and is implemented
 
 class ProductDetailAPIView(generics.RetrieveAPIView):
-  queryset = Product.objects.all()
-  serializer_class = ProductSerializer
-
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
 
 # create view 
 class ProductCreateAPIView(generics.CreateAPIView):
-  queryset = Product.objects.all()
-  serializer_class = ProductSerializer
-  def perform_create(self, serializer):
-    name = serializer.validated_data.get('name')
-    description = serializer.validated_data.get('description')
-    price = serializer.validated_data.get('price')
-    
-    serializer.save()
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class ProductListAPIView(generics.ListAPIView):
-  queryset = Product.objects.all()
-  serializer_class = ProductSerializer
-  def perform_create(self, serializer):
-    name = serializer.validated_data.get('name')
-    price = serializer.validated_data.get('price')
-    description = serializer.validated_data.get('description') or None
-    if description is None:
-      description = name 
-    serializer.save(description=description)
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
+
+    def perform_create(self, serializer):
+        description = serializer.validated_data.get('description') or serializer.validated_data.get('name')
+        serializer.save(description=description)
     
     
     
@@ -52,7 +51,7 @@ def product_alt_view(request, pk=None):
     if request.method == "POST":
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
-            instance = serializer.save()
+            serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
@@ -64,6 +63,8 @@ class ProductUpdateAPIView(generics.RetrieveUpdateAPIView):
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
 
     def get_object(self):
         """

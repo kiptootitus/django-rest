@@ -3,9 +3,10 @@ from rest_framework import generics
 from permissions import isStaffEditorPermission
 from .models import Author, Book, BookAuthor
 from .serializers import AuthorSerializer, BookSerializer, BookAuthorSerializer
-from rest_framework import permissions
+from rest_framework import permissions, authentication
+from rest_framework.authentication import SessionAuthentication
+from drf.authentication import TokenAuthentication
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 class AuthorListCreateAPIView(generics.ListCreateAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
@@ -40,4 +41,5 @@ class BookListAPIView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_field = 'pk'
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
