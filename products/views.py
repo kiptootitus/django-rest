@@ -2,33 +2,35 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authentication import SessionAuthentication
+
+from drf.authentication import TokenAuthentication
+from drf.mixins import StaffEditorPermissionMixin
 from .models import Product
 from .serializers import ProductSerializer
-from permissions import isStaffEditorPermission  # Ensure this exists and is implemented
 
-class ProductDetailAPIView(generics.RetrieveAPIView):
+class ProductDetailAPIView(StaffEditorPermissionMixin, generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
+    permission_classes = [permissions.IsAdminUser]
 
 # create view 
-class ProductCreateAPIView(generics.CreateAPIView):
+class ProductCreateAPIView(StaffEditorPermissionMixin, generics.CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
+    permission_classes = [permissions.IsAdminUser]
 
     def perform_create(self, serializer):
         serializer.save()
 
 
-class ProductListAPIView(generics.ListAPIView):
+class ProductListAPIView(StaffEditorPermissionMixin, generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
+    permission_classes = [permissions.IsAdminUser]
 
     def perform_create(self, serializer):
         description = serializer.validated_data.get('description') or serializer.validated_data.get('name')
@@ -57,14 +59,14 @@ def product_alt_view(request, pk=None):
 
 
 
-class ProductUpdateAPIView(generics.RetrieveUpdateAPIView):
+class ProductUpdateAPIView(StaffEditorPermissionMixin, generics.RetrieveUpdateAPIView):
     """
     This view allows you to retrieve a product by its ID (GET) and update it (PUT/PATCH).
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
+    permission_classes = [permissions.IsAdminUser]
 
     def get_object(self):
         """

@@ -6,5 +6,6 @@ urlpatterns = [
     path('api/', include('drf.urls')),
     path('api/products/', include('products.urls')),
     path('api/books/', include('books.urls')),
+    path('api/v2/', include('core.routers'))
     
 ]

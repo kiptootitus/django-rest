@@ -1,45 +1,40 @@
 from rest_framework import generics
-
-from permissions import isStaffEditorPermission
-from .models import Author, Book, BookAuthor
-from .serializers import AuthorSerializer, BookSerializer, BookAuthorSerializer
-from rest_framework import permissions, authentication
+from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication
 from drf.authentication import TokenAuthentication
 
-class AuthorListCreateAPIView(generics.ListCreateAPIView):
+from drf.mixins import StaffEditorPermissionMixin
+from .models import Author, Book, BookAuthor
+from .serializers import AuthorSerializer, BookSerializer, BookAuthorSerializer
+
+
+class AuthorListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
 
-class AuthorRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+
+class AuthorRetrieveUpdateDestroyAPIView(StaffEditorPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     lookup_field = 'pk'
-class BookListCreateAPIView(generics.ListCreateAPIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+
+
+class BookListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [isStaffEditorPermission]
-
-class BookRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    lookup_field = 'pk'
-    permission_classes = [isStaffEditorPermission]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
 
 
-class BookAuthorListCreateAPIView(generics.ListCreateAPIView):
-    queryset = BookAuthor.objects.all()
-    serializer_class = BookAuthorSerializer
-
-class BookAuthorRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = BookAuthor.objects.all()
-    serializer_class = BookAuthorSerializer
-    lookup_field = 'pk'
-
-
-class BookListAPIView(generics.ListAPIView):
+class BookRetrieveUpdateDestroyAPIView(StaffEditorPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_field = 'pk'
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
+
+
+class BookAuthorListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView):
+    queryset = BookAuthor.objects.all()
+    serializer_class = BookAuthorSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
