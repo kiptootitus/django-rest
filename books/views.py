@@ -24,6 +24,7 @@ class AuthorRetrieveUpdateDestroyAPIView(StaffEditorPermissionMixin, generics.Re
 class BookListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    lookup_field = 'pk'
     authentication_classes = [SessionAuthentication, TokenAuthentication]
 
 

@@ -14,7 +14,7 @@ class BookCreateViewSet(viewsets.ModelViewSet):
   lookup_field = 'pk'
   
   
-  class BookGenericViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class BookGenericViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_field = 'pk' 
