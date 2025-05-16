@@ -1,8 +1,11 @@
 from rest_framework import generics
+
+from permissions import isStaffEditorPermission
 from .models import Author, Book, BookAuthor
 from .serializers import AuthorSerializer, BookSerializer, BookAuthorSerializer
+from rest_framework import permissions
 
-
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 class AuthorListCreateAPIView(generics.ListCreateAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
@@ -14,11 +17,13 @@ class AuthorRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 class BookListCreateAPIView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [isStaffEditorPermission]
 
 class BookRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_field = 'pk'
+    permission_classes = [isStaffEditorPermission]
 
 
 class BookAuthorListCreateAPIView(generics.ListCreateAPIView):
@@ -29,3 +34,10 @@ class BookAuthorRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIVi
     queryset = BookAuthor.objects.all()
     serializer_class = BookAuthorSerializer
     lookup_field = 'pk'
+
+
+class BookListAPIView(generics.ListAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    lookup_field = 'pk'
+    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
