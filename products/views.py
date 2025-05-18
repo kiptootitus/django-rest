@@ -30,6 +30,7 @@ class ProductListAPIView(StaffEditorPermissionMixin, generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     authentication_classes = [SessionAuthentication, TokenAuthentication]
+    lookup_field = 'pk'
     permission_classes = [permissions.IsAdminUser]
 
     def perform_create(self, serializer):

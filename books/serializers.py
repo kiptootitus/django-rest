@@ -4,13 +4,12 @@ from rest_framework.reverse import reverse
 
 class BookSerializer(serializers.ModelSerializer):
   edit_url = serializers.SerializerMethodField(read_only=True)
-  url = serializers.HyperlinkedIdentityField(view_name='book  -update', lookup_field='pk')
+  # url = serializers.HyperlinkedIdentityField(view_name='books-detail')
   class Meta:
     model = Book
     fields = [
       'edit_url',
-      'url',
-      'pk',
+      # 'url',
       'author',
       'title',
       'price',
@@ -21,7 +20,7 @@ class BookSerializer(serializers.ModelSerializer):
     request = self.context.get('request')
     if request is None:
       return None
-    return reverse("books-detail", kwargs={"pk": obj.pk}, request=request)
+    return reverse("book-update", kwargs={"pk": obj.pk}, request=request)
     
     
 
