@@ -5,11 +5,11 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 
 from drf.authentication import TokenAuthentication
-from drf.mixins import StaffEditorPermissionMixin
+from drf.mixins import StaffEditorPermissionMixin, UserQuerySetMixin
 from .models import Product
 from .serializers import ProductSerializer
 
-class ProductDetailAPIView(StaffEditorPermissionMixin, generics.RetrieveAPIView):
+class ProductDetailAPIView(UserQuerySetMixin, StaffEditorPermissionMixin, generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     authentication_classes = [SessionAuthentication, TokenAuthentication]
@@ -26,16 +26,24 @@ class ProductCreateAPIView(StaffEditorPermissionMixin, mixins.ListModelMixin, ge
         serializer.save()
 
 
-class ProductCreateListAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView):
+class ProductCreateListAPIView(UserQuerySetMixin, StaffEditorPermissionMixin, generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     lookup_field = 'pk'
-    permission_classes = [permissions.IsAdminUser]
+
 
     def perform_create(self, serializer):
         description = serializer.validated_data.get('description') or serializer.validated_data.get('name')
-        serializer.save(description=description)
+        serializer.save(user = self.request.user, description=description)
+
+    # def get_queryset(self, *args, **kwargs):
+    #     qs= super().get_queryset(*args, **kwargs)
+    #     request = self.request
+    #     user = request.user
+    #     if not user.is_authenticated:
+    #         return Product.objects.none()
+    #     return qs.filter(user=self.request.user)
     
     
     
@@ -60,7 +68,7 @@ def product_alt_view(request, pk=None):
 
 
 
-class ProductUpdateAPIView(StaffEditorPermissionMixin, generics.RetrieveUpdateAPIView):
+class ProductUpdateAPIView(UserQuerySetMixin, StaffEditorPermissionMixin, generics.RetrieveUpdateAPIView):
     """
     This view allows you to retrieve a product by its ID (GET) and update it (PUT/PATCH).
     """

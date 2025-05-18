@@ -3,7 +3,7 @@ from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication
 from drf.authentication import TokenAuthentication
 
-from drf.mixins import StaffEditorPermissionMixin
+from drf.mixins import StaffEditorPermissionMixin, UserQuerySetMixin
 from .models import Author, Book, BookAuthor
 from .serializers import AuthorSerializer, BookSerializer, BookAuthorSerializer
 
@@ -21,7 +21,7 @@ class AuthorRetrieveUpdateDestroyAPIView(StaffEditorPermissionMixin, generics.Re
     authentication_classes = [SessionAuthentication, TokenAuthentication]
 
 
-class BookListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView):
+class BookListCreateAPIView(UserQuerySetMixin,StaffEditorPermissionMixin, generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_field = 'pk'

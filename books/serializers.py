@@ -10,7 +10,7 @@ class BookSerializer(serializers.ModelSerializer):
     fields = [
       'edit_url',
       # 'url',
-      'author',
+      # 'author',
       'title',
       'price',
       'description',
