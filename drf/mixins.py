@@ -12,9 +12,11 @@ class UserQuerySetMixin():
 
     def get_queryset(self, *args, **kwargs):
         lookup_data = {}
-        lookup_data[self.user_field] = self.request.user
-        # print(lookup_data)
+        user = self.request.user
+        lookup_data[self.user_field] = user
+        print(lookup_data)
         qs = super().get_queryset(*args, **kwargs)
-        # print(qs)
-
+        print(qs)
+        if user.is_staff:
+            return qs
         return qs.filter(**lookup_data)

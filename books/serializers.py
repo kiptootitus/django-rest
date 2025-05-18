@@ -1,15 +1,17 @@
 from .models import Author, Book, BookAuthor
 from rest_framework import serializers
 from rest_framework.reverse import reverse
+from drf.serializers import UserPublicSerializer
 
 class BookSerializer(serializers.ModelSerializer):
   edit_url = serializers.SerializerMethodField(read_only=True)
   # url = serializers.HyperlinkedIdentityField(view_name='books-detail')
+  owner = UserPublicSerializer(read_only=True)
   class Meta:
     model = Book
     fields = [
       'edit_url',
-      # 'url',
+      'owner',
       # 'author',
       'title',
       'price',

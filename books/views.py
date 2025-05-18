@@ -24,15 +24,20 @@ class AuthorRetrieveUpdateDestroyAPIView(StaffEditorPermissionMixin, generics.Re
 class BookListCreateAPIView(UserQuerySetMixin,StaffEditorPermissionMixin, generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    lookup_field = 'pk'
     authentication_classes = [SessionAuthentication, TokenAuthentication]
+    lookup_field = 'pk'
+
+    def perform_create(self, serializer):
+        description = serializer.validated_data.get('description') or serializer.validated_data.get('title')
+        serializer.save(user=self.request.user, description=description)
 
 
-class BookRetrieveUpdateDestroyAPIView(StaffEditorPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
+class BookRetrieveUpdateDestroyAPIView(UserQuerySetMixin, StaffEditorPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    lookup_field = 'pk'
     authentication_classes = [SessionAuthentication, TokenAuthentication]
+
+    lookup_field = 'pk'
 
 
 class BookAuthorListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView):

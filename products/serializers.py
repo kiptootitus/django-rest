@@ -1,15 +1,18 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
+
+from drf.serializers import UserPublicSerializer
 from .models import Product
 
 class ProductSerializer(serializers.ModelSerializer):
     my_discount = serializers.SerializerMethodField()
     edit_url = serializers.SerializerMethodField()
-
+    owner =  UserPublicSerializer(source='user',read_only=True)
     class Meta:
         model = Product
         fields = [
             'edit_url',
+            'owner',
             'pk',
             'name',
             'description',
@@ -19,18 +22,6 @@ class ProductSerializer(serializers.ModelSerializer):
             'my_discount',
         ]
         read_only_fields = ['edit_url', 'my_discount']
-
-    def validate_name(self, value):
-        request = self.context.get('request')
-        user = request.user if request else None
-        qs = Product.objects.filter(name__iexact=value)
-        if user and user.is_authenticated:
-            qs = qs.filter(user=user)
-        if self.instance:
-            qs = qs.exclude(pk=self.instance.pk)
-        if qs.exists():
-            raise serializers.ValidationError(f"{value} already exists. This field must be unique.")
-        return value
 
     def get_my_discount(self, obj):
         try:
