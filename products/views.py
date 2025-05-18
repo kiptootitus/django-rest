@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status, permissions, mixins
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 
@@ -16,7 +16,7 @@ class ProductDetailAPIView(StaffEditorPermissionMixin, generics.RetrieveAPIView)
     permission_classes = [permissions.IsAdminUser]
 
 # create view 
-class ProductCreateAPIView(StaffEditorPermissionMixin, generics.CreateAPIView):
+class ProductCreateAPIView(StaffEditorPermissionMixin, mixins.ListModelMixin, generics.CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     authentication_classes = [SessionAuthentication, TokenAuthentication]
@@ -26,7 +26,7 @@ class ProductCreateAPIView(StaffEditorPermissionMixin, generics.CreateAPIView):
         serializer.save()
 
 
-class ProductListAPIView(StaffEditorPermissionMixin, generics.ListAPIView):
+class ProductCreateListAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     authentication_classes = [SessionAuthentication, TokenAuthentication]
