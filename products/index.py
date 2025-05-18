@@ -13,4 +13,5 @@ class ProductIndex(AlgoliaIndex):
             'price': float(instance.price),
             'weight': float(instance.weight) if instance.weight else None,
             'public': instance.public,
-        }
+            }
+    tags = 'get_tags_lists'

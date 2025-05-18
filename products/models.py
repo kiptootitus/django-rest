@@ -1,10 +1,12 @@
+import random
+
 from django.db.models import Q
 from django.db import models
 from config import PRODUCT_TYPE
 from django.conf import settings
 
 User = settings.AUTH_USER_MODEL
-
+TAGS_MODEL_VALUES = ['cars', 'electronics', 'clothes', 'food']
 class ProductQuerySet(models.QuerySet):
   def is_public(self):
     return self.filter(public=True)
@@ -38,7 +40,8 @@ class Product(models.Model):
   objects = ProductManager()
   def is_public(self) -> bool:
     return self.public
-
+  def get_tags_lists(self):
+    return [random.choice(TAGS_MODEL_VALUES)]
   def __str__(self):
     return self.name
   
