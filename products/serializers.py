@@ -8,12 +8,14 @@ class ProductSerializer(serializers.ModelSerializer):
     my_discount = serializers.SerializerMethodField()
     edit_url = serializers.SerializerMethodField()
     owner =  UserPublicSerializer(source='user',read_only=True)
+    public = serializers.BooleanField()
     class Meta:
         model = Product
         fields = [
             'edit_url',
             'owner',
             'pk',
+            'public',
             'name',
             'description',
             'price',

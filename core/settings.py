@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'drf.apps.DrfConfig',
     'products.apps.ProductsConfig',
     'books.apps.BooksConfig',
+    'search.apps.SearchConfig',
     # third-party applications
     'rest_framework',
     'rest_framework.authtoken',
@@ -126,7 +127,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    "PAGE_SIZE": 10
 }
 
 

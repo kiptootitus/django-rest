@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from core.settings import User
+from django.conf import settings
 
 
 class Author(models.Model):
@@ -18,7 +18,7 @@ class Author(models.Model):
 
 
 class Book(models.Model):
-    user = models.ForeignKey(User, default=1, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, null=True, on_delete=models.SET_NULL)
     author = models.ManyToManyField(Author, through="BookAuthor")
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)

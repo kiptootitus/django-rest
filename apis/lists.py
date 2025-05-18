@@ -9,7 +9,7 @@ password = getpass("Please enter your password: ")
 auth_response = requests.post(auth_endpoint, json={'username': username, 'password': password})
 
 if auth_response.status_code == 200:
-    Bearer = '9fa041ca1e3be9c3f15efb95a70d14a3c08bf362'
+    Bearer = auth_response.json()['token']
     print(f"Token received: {Bearer}")
 
     headers = {
@@ -17,7 +17,7 @@ if auth_response.status_code == 200:
     }
 
     # Step 2: Make a GET or POST request to books endpoint
-    endpoint = "http://localhost:8000/api/books/books/"
+    endpoint = "http://127.0.0.1:8000/api/products/lists/"
 
     # If you're just trying to get books:
     response = requests.get(endpoint, headers=headers)

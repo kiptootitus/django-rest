@@ -1,5 +1,4 @@
 from rest_framework import generics
-from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication
 from drf.authentication import TokenAuthentication
 
@@ -36,7 +35,6 @@ class BookRetrieveUpdateDestroyAPIView(UserQuerySetMixin, StaffEditorPermissionM
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-
     lookup_field = 'pk'
 
 
