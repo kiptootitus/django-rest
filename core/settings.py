@@ -1,18 +1,19 @@
-
-
 from pathlib import Path
-
 from django.conf import settings
+from decouple import config
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-fd+$1prwkxsc-mn#5m_qvbu_3vk@%tk7e&f8=5m1a@v33*dd%c'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,13 +30,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'drf.apps.DrfConfig',
-    'products.apps.ProductsConfig',
-    'books.apps.BooksConfig',
-    'search.apps.SearchConfig',
+
+
+    # third-party api services
+    'algoliasearch_django',
+
     # third-party applications
     'rest_framework',
     'rest_framework.authtoken',
+    # django apps
+    'drf.apps.DrfConfig',
+    'products.apps.ProductsConfig',
+    'books.apps.BooksConfig',
+    'search.apps.SearchConfig'
 ]
 
 MIDDLEWARE = [
@@ -47,6 +54,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+ALGOLIA = {
+    'APPLICATION_ID': config('APPLICATION_ID'),
+    'API_KEY': config('API_KEY'),
+    'INDEX_PREFIX': os.getenv('INDEX_PREFIX')
+}
 
 ROOT_URLCONF = 'core.urls'
 

@@ -1,7 +1,9 @@
 from django.db.models import Q
 from django.db import models
 from config import PRODUCT_TYPE
-from core.settings import User
+from django.conf import settings
+
+User = settings.AUTH_USER_MODEL
 
 class ProductQuerySet(models.QuerySet):
   def is_public(self):
@@ -34,6 +36,8 @@ class Product(models.Model):
   public = models.BooleanField(default=True)
 
   objects = ProductManager()
+  def is_public(self) -> bool:
+    return self.public
 
   def __str__(self):
     return self.name
