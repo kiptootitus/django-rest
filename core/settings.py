@@ -57,7 +57,7 @@ MIDDLEWARE = [
 ALGOLIA = {
     'APPLICATION_ID': config('APPLICATION_ID'),
     'API_KEY': config('API_KEY'),
-    'INDEX_PREFIX': os.getenv('INDEX_PREFIX')
+    'INDEX_NAME': config('INDEX_NAME')
 }
 
 ROOT_URLCONF = 'core.urls'
